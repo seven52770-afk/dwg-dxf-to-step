@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>本地創作工作室</title><link rel="stylesheet" href="/style.css"></head>
+<body><aside><div class="brand"><span class="mark">匠</span><div>本地創作工作室<small>把想法，慢慢做成作品。</small></div></div><button id="new" class="primary">＋ 開始新對話</button><h2>我的對話</h2><nav id="history" aria-label="對話紀錄"></nav><div class="aside-bottom"><span id="status" role="status">正在連線本地模型…</span><button id="settings">偏好設定</button><p>在這台電腦運算<br>對話儲存於目前瀏覽器</p></div></aside>
+<main><header><div><small>你的個人工作桌</small><h1 id="title">一起開始創作</h1></div><div class="tools"><button id="export">匯出對話</button><button id="delete">刪除對話</button></div></header>
+<section class="roles" aria-label="選擇夥伴"><button data-role="jimmy-creator"><strong>創作夥伴</strong><span>聊天・靈感・產品發想</span></button><button data-role="jimmy-cad"><strong>建模助手</strong><span>尺寸・結構・設計程式</span></button><button data-role="jimmy-orders"><strong>接單文案</strong><span>詢價・報價草稿・商品介紹</span></button></section>
+<details class="workbench"><summary>進階工具：專案、手動建模與報價</summary>
+ <div class="workspace-select"><label>目前專案<select id="project-select"><option value="">未選取專案</option></select></label><label>啟用技能<select id="skill-select"><option value="">一般聊天</option></select></label></div>
+ <p id="skill-description" class="muted">選取技能後，AI 會依照該技能與已儲存的專案資料協助你。</p>
+ <details><summary>專案筆記與參考資料</summary><div class="panel-body">
+  <div class="inline"><input id="project-new-name" maxlength="80" aria-label="新專案名稱" placeholder="例如：工作台刀具收納"><button id="project-create">建立專案</button></div>
+  <label>專案名稱<input id="project-name" maxlength="80"></label>
+  <label>需求與修改筆記<textarea id="project-notes" maxlength="3000" rows="4" placeholder="已確認尺寸、材料、下一步…"></textarea></label>
+  <label>加入文字參考資料（純文字或 Markdown，每份最多 8,000 字）<input id="project-file" type="file" accept=".txt,.md,text/plain,text/markdown"></label>
+  <div id="project-documents"></div><p class="muted">參考資料最多 8 份；聊天會帶入最多 3,000 字的文件摘錄。筆記與文件儲存後才會帶入 AI。</p>
+  <div class="inline"><button id="project-save" class="primary">儲存專案與對話</button><button id="project-reload">重新載入專案</button><button id="project-chat">接續專案對話</button><button id="project-export">匯出專案備份</button></div>
+  <p id="project-location" class="muted"></p><div id="project-history"></div>
+ </div></details>
+ <details><summary>工程圖轉 3D 實體（DWG／DXF／PDF）</summary>
+<p id="drawing-support"></p><p>適用平板、墊片及等截面零件：選取封閉面域後拉伸。多視圖、盲孔、階梯與曲面需另外指定特徵，不能僅靠線條自動還原。</p>
+<label>工程圖檔案（上限 8 MB）<input id="drawing-file" type="file" accept=".dwg,.dxf,.pdf"></label><button id="drawing-import">讀取工程圖</button>
+<div class="field-grid"><label>圖層<select id="drawing-layer"></select></label><label>封閉面域<select id="drawing-profile"></select></label><label>每圖面單位對應毫米<input id="drawing-scale" type="number" min="0.0001" step="any" value="1"></label><label>拉伸厚度（mm）<input id="drawing-height" type="number" min="0.1" max="300" step="0.1" value="10"></label></div>
+<p>毫米填 1、公分填 10、英吋填 25.4。面域中的內圈會成為貫穿孔；若選到孔本身的面域，則會建立該區域實體。</p>
+<canvas id="drawing-preview" width="700" height="400" class="mesh-canvas" aria-label="工程圖所選面域預覽"></canvas><p id="drawing-size"></p><button id="drawing-build" class="primary" disabled>確認面域與尺寸，建立 3D 實體</button><p id="drawing-status" role="status"></p></details>
+<details><summary>參數化建模工具</summary><div class="panel-body">
+  <p>依確認的尺寸建立真實模型。單位：毫米。可下載 STEP、STL、原始碼與檢查報告。</p>
+  <label>模型模板<select id="cad-type"></select></label><div id="cad-fields" class="field-grid"></div>
+  <p class="muted">預填尺寸僅為範例。收納架為盲孔；保護蓋開口朝上；直角支架不含安裝孔。尚未驗證承載與裝配公差。</p>
+  <button id="cad-build" class="primary">建立模型並檢查</button><p id="cad-progress" role="status"></p><div id="cad-results"></div>
+ </div></details>
+ <details><summary>接單報價計算</summary><div class="panel-body">
+  <p>預填值僅供試算，請換成自己的成本。金額為新臺幣；結果為未稅草稿。</p><div id="quote-fields" class="field-grid"></div>
+  <button id="quote-calculate" class="primary">計算並保存報價</button><div id="quote-results"></div>
+ </div></details><p id="workspace-status" role="status"></p>
+</details>
+<section id="messages" aria-live="polite" aria-label="對話內容"></section>
+<div id="notice" role="status"></div><form id="composer"><div class="chat-attachments"><label>附加工程圖（DWG／DXF／PDF，8 MB 以下）<input type="file" id="chat-drawing-file" accept=".dwg,.dxf,.pdf"></label><button type="button" id="chat-drawing-start">依圖面尺寸建立 STEP</button><span id="chat-drawing-label">尚未附加圖面</span><button type="button" id="chat-drawing-remove" hidden>解除圖面附件</button><p class="muted">① 附加圖檔 → ② 依圖面尺寸建立 STEP → ③ 核對方案，確認建模。缺少尺寸會在聊天中詢問。</p></div><label for="input" class="sr">輸入你的想法</label><textarea id="input" maxlength="12000" rows="3" placeholder="說說你的想法，我們一起把它做出來…"></textarea><div class="compose-bottom"><span>按 Enter 傳送・Shift＋Enter 換行</span><button type="button" id="stop" hidden>停止回答</button><button type="submit" class="primary" id="send">傳送訊息 ↗</button></div></form><footer>建模建議與尺寸需由你確認。此助手不會自動操作機台或傳送客戶訊息。</footer></main>
+<dialog id="preferences"><form method="dialog"><h2>偏好設定</h2><label>回答風格<select id="temperature"><option value="0.2">精確務實</option><option value="0.5">自然均衡</option><option value="0.8">自由發想</option></select></label><label>回答長度<select id="length"><option value="512">精簡回答</option><option value="1024">一般回答</option><option value="2048">詳細回答</option></select></label><p>設定適用於接下來的回答。較長的對話可能超過模型記憶範圍，建議定期整理摘要並另開對話。</p><button class="primary">儲存設定</button></form></dialog>
+<dialog id="project-discard"><h2>重新載入專案？</h2><p>尚未儲存的名稱、筆記與參考資料修改會被放棄，已儲存的專案不受影響。</p><button id="project-keep">繼續編輯</button><button id="project-discard-confirm">放棄修改並重新載入</button></dialog>
+<dialog id="confirm"><h2>刪除這段對話？</h2><p>這個動作無法復原，可先匯出備份。</p><div><button id="cancelDelete">保留對話</button><button id="confirmDelete" class="danger">確認刪除</button></div></dialog><script src="/app.js"></script><script src="/workspace.js"></script><script src="/drawing.js"></script><script src="/chat-cad.js"></script><script src="/multiview.js"></script></body></html>

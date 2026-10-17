@@ -1,0 +1,50 @@
+# Keep local drawings, generated models, backups and test material private.
+/backups/
+/output/
+/tests/
+# Reviewed recipes can reproduce dimensions from private drawings.
+/cad/recipes/
+/cad/reviewed/
+/cad/freecad_mrw7.py
+/interface/mrw7-recipe.mjs
+*.[dD][wW][gG]
+*.[dD][xX][fF]
+*.[pP][dD][fF]
+*.[sS][tT][eE][pP]
+*.[sS][tT][pP]
+*.[sS][tT][lL]
+*.[iI][gG][eE][sS]
+*.[iI][gG][sS]
+*.[bB][rR][eE][pP]
+*.[fF][cC][sS][tT][dD]*
+*.3mf
+*.glb
+*.gltf
+*.obj
+*.gcode
+# Screenshots can contain drawings or local conversations.
+*.[pP][nN][gG]
+*.[jJ][pP][gG]
+*.[jJ][pP][eE][gG]
+*.webp
+*.log
+*.ndjson
+*verification*.json
+*.bak
+*.zip
+*.7z
+
+# Secrets, machine configuration, caches and downloaded model weights.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+/freecad.json
+__pycache__/
+*.py[cod]
+node_modules/
+.venv/
+venv/
+*.gguf
+*.safetensors
